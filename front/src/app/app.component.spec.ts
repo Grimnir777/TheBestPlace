@@ -26,10 +26,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('the-best-place');
   });
 
-  it('should render title in a h1 tag', () => {
+  it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to the-best-place!');
+    expect(compiled.querySelector('.content span').textContent).toContain('the-best-place app is running!');
   });
 });
