@@ -1,4 +1,28 @@
-<h2>Hello world</h2>
+<h1 id="pageTitle">The best place</h1>
 
+<div id="filters">
+  <mat-form-field>
+    <mat-label>Type de région</mat-label>
+    <mat-select [(value)]="selected">
+      <mat-option>Aucune</mat-option>
+      <mat-option value="moutain">Montagne</mat-option>
+      <mat-option value="city">Ville</mat-option>
+      <mat-option value="sea">Mer</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+
+<div id="resultList">
+  <mat-grid-list  cols="4" rowHeight="100px">
+    <mat-grid-tile
+        class="tile"
+        *ngFor="let tile of tiles"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows">
+        <h4>{{tile.text}}</h4>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
 
 <router-outlet></router-outlet>
