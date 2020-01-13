@@ -12,6 +12,7 @@ export class City {
   constructor(city?: any) {
     if (city) {
       this._id = city._id;
+      this.dep = city.dep;
       this.slug = city.slug;
       this.nom_simple = city.nom_simple;
       this.nom_reel = city.nom_reel;

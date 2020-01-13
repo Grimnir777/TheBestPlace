@@ -12,7 +12,7 @@
   </mat-form-field>
 </div>
 
-<mat-paginator [length]="200"
+<mat-paginator [length]="nbTowns"
               [pageSize]=paginatorDefaultSize
               [pageSizeOptions]=paginatorDefaultOptions
               (page)="pageEvent = dataChanged($event)">

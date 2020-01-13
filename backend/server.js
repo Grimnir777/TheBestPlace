@@ -2,7 +2,8 @@
 *   The Best Place server   *
 *****************************/
 
-let mongoose    = require('mongoose'),
+let mongo       = require('mongodb'),
+    mongoose    = require('mongoose'),
     express     = require('express')
     ;
 
@@ -37,10 +38,16 @@ db.once('open', function() {
 });
 
 /* Town shema */
-let villeSchema = new mongoose.Schema({
-  ville: String,
+let townSchema = new mongoose.Schema({
+  _id: String,
+  dep:String,
+  slug:String,
+  nom_simple:String,
+  nom_reel:String,
   code_postal: String,
-  departement: String
+  code_commune:String,
+  longitude_deg:Number,
+  latitude_deg:Number
 });
 
 /*let Ville = mongoose.model('Ville', villeSchema);
@@ -67,4 +74,24 @@ app.get('/getTowns', function (req, res) {
         if(err) throw err;
         res.send(db_result);
     });
+});
+
+/* Get number of towns
+*/
+app.get('/getNbTowns', function (req, res) {
+  db.collection('villes').count({}, function(error, numOfDocs) {
+    res.send({nbTowns: numOfDocs});
+  });
+});
+
+
+/* Get number of towns
+*/
+app.get('/getTownInfos', function (req, res) {
+  let o_id = new mongo.ObjectID(req.query._id);
+
+  db.collection('villes').findOne({_id: o_id}, function (err, db_result) {
+    if(err) throw err;
+    res.json(db_result);
+  });
 });

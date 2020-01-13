@@ -1,1 +1,5 @@
-<p>city works!</p>
+<div *ngIf="city">
+    <h1>{{city.nom_reel}}</h1>
+    <h3> Département : {{city.dep}}</h3>
+    <h3> Code postal : {{city.code_postal}}</h3>
+</div>

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CityDataService } from '../services/city-data.service';
+import { City } from '../models/city';
 
 @Component({
   selector: 'app-city',
@@ -7,13 +9,16 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./city.component.scss']
 })
 export class CityComponent implements OnInit {
+  public city: City;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private citiesDS: CityDataService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      console.log(params.get('id'));  
+      this.citiesDS.getTownInfos(params.get('id')).subscribe( city => {
+        this.city = new City(city);
       });
+    });
   }
 
 }

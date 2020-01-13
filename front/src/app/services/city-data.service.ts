@@ -9,10 +9,12 @@ import { City } from '../models/city';
 })
 export class CityDataService {
   private _getTownsURL = environment.baseAPI + 'getTowns';
+  private _getNbTownsURL = environment.baseAPI + 'getNbTowns';
+  private _getTownInfosURL = environment.baseAPI + 'getTownInfos';
 
   constructor(private http: HttpClient) { }
 
-  public getCities(skip: number, limit: number) {
+  public getCities(skip: number, limit: number) : Observable<Array<City>> {
     const params = new HttpParams()
       .set('skip', skip.toString())
       .set('limit', limit.toString());
@@ -24,6 +26,31 @@ export class CityDataService {
           cities.push(new City(citiesfromAPI[i]));
         }
         suscriber.next(cities);
+      },
+        (err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  public getNbTowns() : Observable<any> {
+    return new Observable((suscriber) => {
+      this.http.get(this._getNbTownsURL).subscribe( result => {
+        suscriber.next(result);
+      },
+        (err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  public getTownInfos(_id: string) : Observable<City> {
+    const params = new HttpParams()
+      .set('_id', _id.toString());
+
+    return new Observable((suscriber) => {
+      this.http.get(this._getTownInfosURL, {params}).subscribe( result => {
+        suscriber.next(result as City);
       },
         (err) => {
           console.log(err);

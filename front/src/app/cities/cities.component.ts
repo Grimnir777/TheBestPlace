@@ -15,10 +15,14 @@ export class CitiesComponent implements OnInit {
   cities: Array<City> = [];
   public paginatorDefaultSize = 40;
   public paginatorDefaultOptions = [40,80,120];
+  public nbTowns = 0;
 
   pageEvent: PageEvent;
 
   ngOnInit() {
+    this.citiesDS.getNbTowns().subscribe( result => {
+      this.nbTowns = result['nbTowns'];
+    });
     this.cities = [];
     this.citiesDS.getCities(0,this.paginatorDefaultSize).subscribe((result:Array<any>)=>{
       result.forEach((city) => {
