@@ -12,10 +12,12 @@ db=client.TheBestPlace.criteres
 
 # CONFIG SCRIPT
 IN_FILE_PATH = "./scripts/MDB-INSEE-V2.csv"
-SELECT_CHAMP = "Population"
+SELECT_CHAMP = ["Population"]
 STR_SEP = "= = = = = = = = = = = = = = = = = = = = "
-ACTIVE_IMPORT_DB = False #True pour importer les données dans la base
-SHOW_RESULT_IN_TERMINAL = False #False pour désactiver les données à importer
+SHOW_RESULT_IN_TERMINAL=False
+
+# DELTA OR FULL OPTIONS
+DEFAULT_METHOD="ERASE" #ADD or ERASE
 
 # LOGGER
 def logMsg(type,msg) :
@@ -31,16 +33,16 @@ len_args = len(sys.argv)
 str_len = "Nombre de paramètres détecté : " + str(len_args)
 logMsg("INFO",str_len)
 
-# Mode custom -> File + champ
-if len_args == 3 :
+# Mode custom -> Mode + champ
+if len_args >= 3 :
 	logMsg("INFO","Mode par défaut désactivé.")
-	IN_FILE_PATH = sys.argv[1]
-	SELECT_CHAMP = sys.argv[2]
+	DEFAULT_METHOD = sys.argv[1]
+	SELECT_CHAMP = sys.argv[2:]
 
 # Mode custom -> champ
-if len_args == 2 :
+elif len_args == 2 :
 	logMsg("INFO","Mode par défaut désactivé.")
-	SELECT_CHAMP = sys.argv[1]
+	SELECT_CHAMP = [sys.argv[1]]
 
 # Mod default
 elif len_args == 1 :
@@ -51,32 +53,62 @@ else :
 	logMsg("ERROR","Nombre de paramètres incohérents. Les formats valides sont les suivants : ")
 	print("\t * python add_custom_from_MDB-INSEE.py")
 	print("\t * python add_custom_from_MDB-INSEE.py <SELECT_CHAMP>")
-	print("\t * python add_custom_from_MDB-INSEE.py <PATH_TO_INPUT_FILE> <SELECT_CHAMP>")
+	print("\t * python add_custom_from_MDB-INSEE.py <MODE> <SELECT_CHAMP_1> <SELECT_CHAMP_2> ...")
 	exit(1)
 
 print(STR_SEP)
 logMsg("INFO","Paramètres : ")
 print("\t * Fichier : "+IN_FILE_PATH)
-print("\t * Champ : "+SELECT_CHAMP)
+print("\t * Champ : "+str(SELECT_CHAMP))
+print("\t * Méthode : "+DEFAULT_METHOD)
 print(STR_SEP)
 
-#On tente de charger les données
-try :
-	datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = ['LIBGEO',SELECT_CHAMP], low_memory = False )
-except :
-	logMsg("ERROR","Fichier introuvable ou champ incohérent.")
-	exit(1)
 
-#On tente d'enregistrer les données
 try :
-	dataJSON = datas.to_dict(orient='records')
+	# Enregistrement dans la mongoDB
+	if DEFAULT_METHOD == "ERASE" :
+		logMsg("INFO","Import en mode ERASE activé. Seul les nouveaux champs seront retenus.")
+
+		#Recupération des données
+		array_search = SELECT_CHAMP
+		array_search.append("CODGEO")
+
+		datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = array_search, low_memory = False )
+		dataJSON = datas.to_dict(orient='records')
+
+		#Enregistrement
+		db.remove({})
+		db.insert_many(dataJSON)
+
+	elif DEFAULT_METHOD == "ADD" :
+		logMsg("INFO","Import en mode ADD activé. Ajout du nouveau champ à la base.")
+
+		# Récupération des champs actuellement utilisés
+		scheme = db.find()
+		el = scheme[0]
+		scheme_keys = el.keys()
+		search_els = []
+		for one_el in scheme_keys :
+			cp_on = one_el.encode("utf-8")
+
+			if cp_on != "_id" :
+				search_els.append(cp_on)
+
+		# Combinaison des anciens champs et des nouveaux
+		search_els = search_els + SELECT_CHAMP
+
+		# Récupération des données
+		datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = search_els, low_memory = False )
+		dataJSON = datas.to_dict(orient='records')
+
+		# Enregistrement
+		db.remove({})
+		db.insert_many(dataJSON)
+
 	#Voir dans la console le résultat de l'extraction
 	if SHOW_RESULT_IN_TERMINAL == True :
 		print(dataJSON)
 
-	# Enregistrement dans la mongoDB
-	if ACTIVE_IMPORT_DB == True :
-		db.insert_many(dataJSON)
 except :
 	logMsg("ERROR","Une erreur est survenue lors de l'engistrement des données.")
 	exit(1)
@@ -85,4 +117,20 @@ except :
 logMsg("INFO","Import réussi. Fin du script avec succés.")
 exit(0)
 
-# str_name = re.sub('[^a-zA-Z0-9]','',str_name)
+
+
+#
+# db.update(
+# 	query,
+# 	alue
+# )
+#
+# for one_data in dataJSON :
+# 	#Update
+# 	srt_codgeo = str(one_data["CODGEO"])
+# 	query = {"CODGEO" : srt_codgeo}
+# 	value = { "$set": {SELECT_CHAMP: one_data[SELECT_CHAMP]} }
+# 	db.update(
+# 		query,
+# 		value
+# 	)
