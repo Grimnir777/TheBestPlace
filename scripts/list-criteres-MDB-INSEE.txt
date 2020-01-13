@@ -1,0 +1,94 @@
+CODGEO
+Nb Pharmacies et parfumerie	Dynamique Entrepreneuriale
+Dynamique Entrepreneuriale Service et Commerce
+Synergie Medicale COMMUNE	Orientation Economique
+Indice Fiscal Partiel
+Score Fiscal
+Indice Evasion Client
+Score Evasion Client
+Indice Synergie Medicale
+Score Synergie Medicale	SEG Croissance POP
+LIBGEO
+REG
+DEP
+Nb Omnipraticiens BV
+Nb Infirmiers Liberaux BV
+Nb dentistes Liberaux BV
+Nb pharmaciens Liberaux BV
+Densite Medicale BV
+Score equipement de sante BV
+Indice Demographique
+Score Demographique
+Indice Menages
+Score Menages
+Population
+Evolution Population
+Evolution Pop %
+Nb Menages
+Nb Residences Principales
+Nb proprietaire
+Nb Logement
+Nb Residences Secondaires
+Nb Log Vacants
+Nb Occupants Residence Principale
+Nb Femme
+Nb Homme
+Nb Mineurs
+Nb Majeurs
+Nb Etudiants
+Nb Entreprises Secteur Services
+Nb Entreprises Secteur Commerce
+Nb Entreprises Secteur Construction
+Nb Entreprises Secteur Industrie
+Nb Creation Enteprises
+Nb Creation Industrielles
+Nb Creation Construction
+Nb Creation Commerces
+Nb Creation Services
+Moyenne Revenus Fiscaux Departementaux
+Dep Moyenne Salaires Horaires
+Moyenne Revenus Fiscaux Regionaux
+Dep Moyenne Salaires Cadre Horaires
+Dep Moyenne Salaires Prof Intermediaire Horaires
+Dep Moyenne Salaires Employe Horaires
+Dep Moyenne Salaires Ouvrie Horaires
+Reg Moyenne Salaires Horaires
+Reg Moyenne Salaires Cadre Horaires
+Reg Moyenne Salaires Prof Intermediaire Horaires
+Reg Moyenne Salaires Employe Horaires
+Reg Moyenne Salaires Ouvrie Horaires
+Valeur ajoutee regionale
+Urbanite Ruralite
+Score Urbanite
+Nb Atifs
+Nb Actifs Salaries
+Nb Actifs Non Salaries
+Nb Logement Secondaire et Occasionnel
+Nb Hotel
+Capacite Hotel
+Nb Camping
+Capacite Camping
+Dynamique Demographique BV
+Taux etudiants
+Taux Propriete
+Dynamique Demographique INSEE
+Capacite Fisc
+Capacite Fiscale
+Moyenne Revnus fiscaux
+Taux Evasion Client
+Nb Education, sante, action sociale
+Nb Services personnels et domestiques
+Nb Sante, action sociale
+Nb Industries des biens intermediaires
+Nb de Commerce	Nb de Services aux particuliers
+Nb institution de Education, sante, action sociale, administration	PIB Regionnal
+SEG Environnement Demographique Obsolete
+Score Croissance Population	Score Croissance Entrepreneuriale
+Score VA Region
+Score PIB
+Environnement Demographique	Fidelite
+SYN MEDICAL
+Seg Cap Fiscale
+Seg Dyn Entre
+DYN SetC
+CP
