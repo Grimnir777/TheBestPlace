@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import pandas
 client = MongoClient('mongodb://localhost')
-db=client.VilleDeReve.villes
+db=client.TheBestPlace.villes
 
 villes = pandas.read_csv('/home/valentin/Documents/Projet_XML/TheBestPlace/scripts/villes_france.csv', sep=',',header=0,names=['file_id','dep', 'slug','nom','nom_simple','nom_reel','nom_soundex','nom_metaphone','code_postal',
 'commune','code_commune','arrondissement', 'canton', 'amdi' ,'population_2010','population_1999','population_2012','densite_2010','surface','longitude_deg','latitude_deg','longitude_grd','latitude_grd'
