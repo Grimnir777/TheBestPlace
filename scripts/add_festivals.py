@@ -1,23 +1,26 @@
 import pandas
 from pandas.io.json import json_normalize
 from pymongo import MongoClient
+
+# connect to the database
 client = MongoClient('localhost:27017')
 db=client.TheBestPlace.criteres
 
-# on save le fichier json dans df
-df = pandas.read_json('/home/valentin/Documents/Projet_XML/TheBestPlace/scripts/panorama-des-festivals.json')
-# on parse pour accéder aux colomnes contenues dans fields
+# get json in a dataframe
+df = pandas.read_json('/home/valentin/Documents/Projet_XML/TheBestPlace/scripts/panorama-des-festivals.json', orient='records')
+
+# parse it to access the tab named 'fields'
 df2=json_normalize(df.fields)
+print(df2)
 
-#nombre de ligne
-total_rows=len(df.axes[0])
+# get only the code_insee
+villes_avec_festival=pandas.DataFrame(df2['code_insee'].copy())
+print(villes_avec_festival)
 
-#print(df['fields','commune_principale'].value_counts())
-#print(df[0]["commune_principale"])
-#print(df['fields']["commune_principale"])
+# count the number of occurences by city
+festival_par_ville = pandas.DataFrame(villes_avec_festival['code_insee'].value_counts())
+festival_par_ville.columns=['nb_festival']
+print(festival_par_ville)
 
-nb_festival_par_ville=df2['code_insee'].value_counts()
-
-valeur_moyenne = nb_festival_par_ville.sum()
-
-db.insert_many(nb_festival_par_ville)
+# POST
+db.insert_many(festival_par_ville.to_dict('records'))
