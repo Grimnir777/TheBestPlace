@@ -9,6 +9,17 @@ let mongoose    = require('mongoose'),
 
 /* Create server express */
 let app = express();
+app.use(function (req, res, next) {
+
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  next();
+});
 let server = app.listen(2020, function () {
    let host = server.address().address
    let port = server.address().port
@@ -17,7 +28,7 @@ let server = app.listen(2020, function () {
 });
 
 /* Connect to mongoDB */
-mongoose.connect('mongodb://localhost/VilleDeReve', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/TheBestPlace', {useNewUrlParser: true});
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
