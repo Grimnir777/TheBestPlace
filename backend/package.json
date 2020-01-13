@@ -1,0 +1,19 @@
+{
+  "name": "thebestplace",
+  "version": "1.0.0",
+  "description": "polytech",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "js2xmlparser": "^4.0.0",
+    "mongodb": "^3.4.0",
+    "mongoose": "^5.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
