@@ -2,13 +2,25 @@
 *   The Best Place server   *
 *****************************/
 
-let mongoose    = require('mongoose'),
+let mongo       = require('mongodb'),
+    mongoose    = require('mongoose'),
     express     = require('express')
     ;
 
 
 /* Create server express */
 let app = express();
+app.use(function (req, res, next) {
+
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  next();
+});
 let server = app.listen(2020, function () {
    let host = server.address().address
    let port = server.address().port
@@ -17,7 +29,7 @@ let server = app.listen(2020, function () {
 });
 
 /* Connect to mongoDB */
-mongoose.connect('mongodb://localhost/VilleDeReve', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/TheBestPlace', {useNewUrlParser: true});
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -26,10 +38,16 @@ db.once('open', function() {
 });
 
 /* Town shema */
-let villeSchema = new mongoose.Schema({
-  ville: String,
+let townSchema = new mongoose.Schema({
+  _id: String,
+  dep:String,
+  slug:String,
+  nom_simple:String,
+  nom_reel:String,
   code_postal: String,
-  departement: String
+  code_commune:String,
+  longitude_deg:Number,
+  latitude_deg:Number
 });
 
 /*let Ville = mongoose.model('Ville', villeSchema);
@@ -56,4 +74,24 @@ app.get('/getTowns', function (req, res) {
         if(err) throw err;
         res.send(db_result);
     });
+});
+
+/* Get number of towns
+*/
+app.get('/getNbTowns', function (req, res) {
+  db.collection('villes').count({}, function(error, numOfDocs) {
+    res.send({nbTowns: numOfDocs});
+  });
+});
+
+
+/* Get number of towns
+*/
+app.get('/getTownInfos', function (req, res) {
+  let o_id = new mongo.ObjectID(req.query._id);
+
+  db.collection('villes').findOne({_id: o_id}, function (err, db_result) {
+    if(err) throw err;
+    res.json(db_result);
+  });
 });
