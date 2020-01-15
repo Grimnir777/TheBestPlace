@@ -19,6 +19,9 @@ SHOW_RESULT_IN_TERMINAL=False
 # DELTA OR FULL OPTIONS
 DEFAULT_METHOD="ERASE" #ADD or ERASE
 
+#Autre
+dataJSON = {}
+
 # LOGGER
 def logMsg(type,msg) :
 	print("["+type+"] ~ "+msg)
@@ -73,41 +76,54 @@ try :
 		array_search = SELECT_CHAMP
 		array_search.append("CODGEO")
 
-		datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = array_search, low_memory = False )
-		dataJSON = datas.to_dict(orient='records')
-
-		#Enregistrement
-		db.remove({})
-		db.insert_many(dataJSON)
+		try :
+			datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = array_search, low_memory = False )
+			dataJSON = datas.to_dict(orient='records')
+		except :
+			logMsg("ERROR","Impossible d'accèder aux données du fichier spécifié.")
+			exit(1)
 
 	elif DEFAULT_METHOD == "ADD" :
 		logMsg("INFO","Import en mode ADD activé. Ajout du nouveau champ à la base.")
 
-		# Récupération des champs actuellement utilisés
-		scheme = db.find()
-		el = scheme[0]
-		scheme_keys = el.keys()
 		search_els = []
-		for one_el in scheme_keys :
-			cp_on = one_el.encode("utf-8")
+		# Récupération des champs actuellement utilisés
+		try :
+			scheme = db.find()
+			el = scheme[0]
+			scheme_keys = el.keys()
+			search_els = []
+			for one_el in scheme_keys :
+				cp_on = one_el.encode("utf-8")
 
-			if cp_on != "_id" :
-				search_els.append(cp_on)
+				if cp_on != "_id" :
+					search_els.append(cp_on)
 
-		# Combinaison des anciens champs et des nouveaux
-		search_els = search_els + SELECT_CHAMP
+			# Combinaison des anciens champs et des nouveaux
+			search_els = search_els + SELECT_CHAMP
+
+		except :
+			logMsg("ERROR","Impossible de créer la liste des champs à récupérer.")
+			exit(1)
 
 		# Récupération des données
-		datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = search_els, low_memory = False )
-		dataJSON = datas.to_dict(orient='records')
-
-		# Enregistrement
-		db.remove({})
-		db.insert_many(dataJSON)
+		try :
+			datas =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = search_els, low_memory = False )
+			dataJSON = datas.to_dict(orient='records')
+		except :
+			logMsg("ERROR","Impossible d'accèder aux données du fichier spécifié.")
+			exit(1)
 
 	#Voir dans la console le résultat de l'extraction
 	if SHOW_RESULT_IN_TERMINAL == True :
 		print(dataJSON)
+
+	# Enregistrement des données
+	try :
+		db.remove({})
+		db.insert_many(dataJSON)
+	except :
+		logMsg("ERROR","Erreur lors de l'enregistrement en base")
 
 except :
 	logMsg("ERROR","Une erreur est survenue lors de l'engistrement des données.")
