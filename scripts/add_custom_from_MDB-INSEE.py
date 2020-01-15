@@ -9,6 +9,7 @@ from pymongo import MongoClient
 #CONFIG DB
 client = MongoClient('localhost:27017')
 db=client.TheBestPlace.criteres
+client.TheBestPlace.criteres.create_index([("CODGEO", 1)])
 
 # CONFIG SCRIPT
 IN_FILE_PATH = "./scripts/MDB-INSEE-V2.csv"
@@ -114,19 +115,38 @@ try :
 			logMsg("ERROR","Impossible d'accèder aux données du fichier spécifié.")
 			exit(1)
 
-	#Voir dans la console le résultat de l'extraction
-	if SHOW_RESULT_IN_TERMINAL == True :
-		print(dataJSON)
 
 	# Enregistrement des données
-	try :
-		db.remove({})
-		db.insert_many(dataJSON)
-	except :
-		logMsg("ERROR","Erreur lors de l'enregistrement en base")
+	if DEFAULT_METHOD == "ADD" or DEFAULT_METHOD == "ERASE" :
+		try :
+			db.remove({})
+			db.insert_many(dataJSON)
+		except :
+			logMsg("ERROR","Erreur lors de l'enregistrement en base")
+
+
+	elif DEFAULT_METHOD == "ADD_EX" :
+		logMsg("INFO","Import en mode ADD_EX activé.")
+		logMsg("INFO","Le champs demandés seront ajouté à ceux déja présent même si ils sont externes au jeu de données de l'INSEE.")
+		logMsg("INFO","L'opération peut durer quelques instants.")
+
+		search_els = ['CODGEO'] + SELECT_CHAMP
+		df =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = search_els, low_memory = False )
+
+		for index, row in df.iterrows():
+			# Récupération des nouvelles informations pour le CODGEO courant
+			json_o = df.loc[index].to_json()
+			json_test = json.loads(json_o)
+			# Récupération des informations déja existantes en base
+			json_to_merge = db.find_one({'CODGEO':row['CODGEO']})
+			del json_to_merge["_id"]
+			# Construction du JSON composé des deux sources
+			json_finish = {key: value for (key, value) in (json_to_merge.items() + json_test.items())}
+			# Replace
+			db.find_one_and_replace({'CODGEO':row['CODGEO']}, json_finish)
 
 except :
-	logMsg("ERROR","Une erreur est survenue lors de l'engistrement des données.")
+	logMsg("ERROR","Erreur dans l'éxécution de la demande.")
 	exit(1)
 
 
