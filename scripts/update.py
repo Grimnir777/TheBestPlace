@@ -14,14 +14,6 @@ client.TheBestPlace.criteres.create_index([("CODGEO", 1)])
 print('Updating DB')
 
 for index, row in df.iterrows():
-	json_o = df.loc[index].to_json()
-	json_test = json.loads(json_o)
-
-	json_to_merge = db.find_one({'CODGEO':row['CODGEO']})
-	del json_to_merge["_id"]
-
-	json_finish = {key: value for (key, value) in (json_to_merge.items() + json_test.items())}
-
-	db.find_one_and_replace({'CODGEO':row['CODGEO']}, json_finish  )
+	db.find_one_and_update({'CODGEO':row['CODGEO']}, {"$set": json.loads(df.loc[index].to_json())} )
 
 print('done')

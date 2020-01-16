@@ -1,3 +1,5 @@
 Compter le nombre d'éléments dans une collection :
 db.getCollection('villes').count()
 
+Créer un index sur la collection critère sur CODGEO et trier par ordre croissant
+db.getCollection('criteres').createIndex({CODGEO:1})

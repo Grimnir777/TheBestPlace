@@ -1,5 +1,37 @@
 <div *ngIf="city">
-    <h1>{{city.nom_reel}}</h1>
-    <h3> Département : {{city.dep}}</h3>
-    <h3> Code postal : {{city.code_postal}}</h3>
+    <div id="header">
+        <h1>{{city.nom_reel}}</h1>
+    </div>
+
+    <div class="content">
+        <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Informations basiques
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-list>
+                <mat-list-item>Département : {{city.dep}}</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>Code postal : {{city.code_postal}}</mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Critères
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-list>
+                <mat-list-item>Item 1</mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>Item 2</mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+        </mat-accordion>
+        
+    </div>
 </div>
+
+<div class="mapContainer" #map [style.width]="width" [style.height]="height"></div> 
