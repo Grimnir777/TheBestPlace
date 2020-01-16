@@ -9,6 +9,8 @@ import { City } from '../models/city';
 })
 export class CityDataService {
   private _getTownsURL = environment.baseAPI + 'getTowns';
+  private _getDepsURL = environment.baseAPI + 'getAllDeps';
+  private _findCitiesFilteredURL = environment.baseAPI + 'findCitiesWithFilter';
   private _getNbTownsURL = environment.baseAPI + 'getNbTowns';
   private _getTownInfosURL = environment.baseAPI + 'getTownInfos';
 
@@ -25,6 +27,33 @@ export class CityDataService {
         for (let i = 0; i < citiesfromAPI.length; i++) {
           cities.push(new City(citiesfromAPI[i]));
         }
+        suscriber.next(cities);
+      },
+        (err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  public getAllDeps() : Observable<Array<any>> {
+    return new Observable((suscriber) => {
+      this.http.get(this._getDepsURL).subscribe((deps: Array<any>) => {
+        suscriber.next(deps);
+      },
+        (err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  public getCitiesWFilter(filter: any, skip: number, limit: number) : Observable<Array<any>> {
+    let req = {
+      filter:filter,
+      skip:skip,
+      limit:limit
+    }
+    return new Observable((suscriber) => {
+      this.http.post(this._findCitiesFilteredURL,req).subscribe((cities: Array<any>) => {        
         suscriber.next(cities);
       },
         (err) => {

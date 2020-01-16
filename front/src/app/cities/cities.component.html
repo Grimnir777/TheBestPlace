@@ -1,49 +1,51 @@
 
 <div class="header">
   <h1 id="pageTitle">The best place</h1>
-  
-  <div class="buttonRow">
-    <button mat-raised-button color="warn">Réinitialiser les filtres</button>
-  </div>
-  <div id="filters">
-    <div class="row">
-      <mat-form-field>
-        <mat-label>Type de région</mat-label>
-        <mat-select [(value)]="selected">
-          <mat-option>Aucune</mat-option>
-          <mat-option value="moutain">Montagne</mat-option>
-          <mat-option value="city">Ville</mat-option>
-          <mat-option value="sea">Mer</mat-option>
-        </mat-select>
-      </mat-form-field>
+  <form [formGroup]="form">
 
+    <div class="buttonRow">
+      <button mat-raised-button color="warn">Réinitialiser les filtres</button>
     </div>
-    <div class="row">
-      <div class="checkbox">
-        <mat-checkbox>Check me!</mat-checkbox>
-      </div>
-    </div>
-    <div class="row">
-      <div class="checkbox">
-        <mat-checkbox>Check me!</mat-checkbox>
-      </div>
-    </div>
-    <div class="row">
-      <div class="checkbox">
-        <mat-checkbox>Check me!</mat-checkbox>
-      </div>
-    </div>
-    <div class="row">
-      <div class="slider">
-        <p>Hello world slider</p>
-        <mat-slider min="0" max="10" step="1" value="0" thumbLabel > </mat-slider>
-      </div>
-    </div>
-   
-  </div>
+    <div id="filters">
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Département</mat-label>
+          <mat-select formControlName="dep" [(value)]="selected">
+            <ng-container *ngFor="let d of deps">
+              <mat-option value="{{d}}">{{d}}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
   
+      </div>
+      <div class="row">
+        <div class="checkbox">
+          <mat-checkbox>Check me!</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="checkbox">
+          <mat-checkbox>Check me!</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="checkbox">
+          <mat-checkbox>Check me!</mat-checkbox>
+        </div>
+      </div>
+      <div class="row">
+        <div class="slider">
+          <p>Hello world slider</p>
+          <mat-slider min="0" max="10" step="1" value="0" thumbLabel > </mat-slider>
+        </div>
+      </div>
+
+      
+    </div>
+    
+  </form>
   <mat-paginator [length]="nbTowns"
-                [pageSize]=paginatorDefaultSize
+                [pageSize]=limit
                 [pageSizeOptions]=paginatorDefaultOptions
                 (page)="pageEvent = dataChanged($event)">
   </mat-paginator>

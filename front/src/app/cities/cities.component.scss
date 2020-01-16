@@ -25,6 +25,7 @@ html, body {
   margin: 0 auto;
 }
 #filters {
+  background-color: white;
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
@@ -33,7 +34,6 @@ html, body {
   .row {
     border-radius: 10px;
     margin: 0.2rem 1rem;
-    background-color: white;
     text-align: center;
     width: 25%;
     .checkbox {

@@ -9,6 +9,7 @@ let mongoose        = require('mongoose')
 ,   custom_parser   = require('./parser.js')
 ,   custom_logger   = require('./logger.js')
 ,   props_reader    = require('properties-reader')
+,   bodyParser      = require('body-parser')
 ;
 
 /* Create Logger */
@@ -30,13 +31,13 @@ logger.debug('App port : ' + app_port);
 
 /* Create server express */
 let app = express();
+app.use(bodyParser.json());
 app.use(function (req, res, next) {
 
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', 'application/json,X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
 
   next();
@@ -120,6 +121,30 @@ app.post('/findCitiesWithFilter', function(req, res){
    let query = (req.body.filter) ? req.body.filter : {};
 
    let town_getted = db.collection(town_collecion_name).find(query).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+        if(err) throw err;
+        db.collection(town_collecion_name).find(query).count().then( (counter) => {
+            res.send({
+                result:db_result,
+                count:counter
+            });
+
+        })
+    });
+});
+
+/* Get all departements
+*/
+app.get('/getAllDeps', function (req, res) {
+    db.collection('villes').aggregate([
+        {
+           $group: { 
+              _id: "$dep"
+           }
+        },
+        {
+          $sort:{_id:1}
+        }
+    ]).toArray(function(err, db_result){
         if(err) throw err;
         res.send(db_result);
     });
