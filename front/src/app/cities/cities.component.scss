@@ -1,19 +1,58 @@
+
+html, body {
+  margin: 0;
+}
+.header {
+  background-color: #3DA35D;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 #pageTitle{
     text-align: center;
     font-size: 4rem;
-  }
-  
-  #resultList,#filters{
-    margin: 2rem;
-  }
-  
-  .tile{
-    background-image: url('../assets/cityExample2.jpg');
-    background-size: cover;
     color: white;
-    font-size: 2.5rem;
-    a {
-        text-decoration: none;
-        color: white;
+}
+  
+#resultList,#filters{
+
+  margin: 2rem;
+}
+.buttonRow {
+  text-align: center;
+  margin: 0 auto;
+}
+#filters {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  flex-wrap:  wrap;
+  .row {
+    border-radius: 10px;
+    margin: 0.2rem 1rem;
+    background-color: white;
+    text-align: center;
+    width: 25%;
+    .checkbox {
+      position: relative;
+      top: 50%;
+      transform: perspective(1px) translateY(-50%);
     }
   }
+}
+
+.tile{
+  background-image: url('../assets/cityExample2.jpg');
+  background-size: cover;
+  color: white;
+  
+  a {
+    text-align: center;
+    font-size: 1.8rem;
+      text-decoration: none;
+      color: white;
+  }
+}

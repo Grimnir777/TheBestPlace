@@ -6,13 +6,13 @@
 let mongoose        = require('mongoose')
 ,   mongo           = require('mongodb')
 ,   express         = require('express')
-,   xmlparser       = require('js2xmlparser')
+,   custom_parser   = require('./parser.js')
 ,   custom_logger   = require('./logger.js')
 ;
 
 /* Configuration */
 // TODO : Create a file conf
-let database_name = 'TheBestPlace';/*"VilleDeReves";*/
+let database_name = /*'TheBestPlace';*/"VilleDeReve";
 let town_collecion_name = 'villes';
 let app_port = 2020;
 
@@ -99,10 +99,24 @@ app.get('/townsToXML', function(req, res){
     let town_getted = db.collection(town_collecion_name).find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
 
-        console.log(db_result);
-        let json = xmlparser.parse('villes', db_result); // change db_result to string
+/*        for(let i = 0; i < db_result.length; ++i){
+            db_result[i]._id = '' + db_result[i]._id + '';
+        }*/
 
-        res.send(json);
+        db_result.forEach(function(town){
+            for(let key in town){
+                town[key] += '';
+            }
+        });
+
+        console.log(db_result);
+
+        logger.debug('Parsing Towns');
+        let xml = custom_parser.js2xml(db_result, {compact : false, indent : 4, rootname : 'Towns', arrayChildNameMap : { 'Towns' : 'Town'}});
+        logger.debug('Result : ');
+        console.log(xml);
+
+        res.send(xml);
     });
 });
 
