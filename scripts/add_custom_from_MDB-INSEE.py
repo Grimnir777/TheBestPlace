@@ -134,16 +134,7 @@ try :
 		df =  pandas.read_csv(IN_FILE_PATH, sep=';',header=0,usecols = search_els, low_memory = False )
 
 		for index, row in df.iterrows():
-			# Récupération des nouvelles informations pour le CODGEO courant
-			json_o = df.loc[index].to_json()
-			json_test = json.loads(json_o)
-			# Récupération des informations déja existantes en base
-			json_to_merge = db.find_one({'CODGEO':row['CODGEO']})
-			del json_to_merge["_id"]
-			# Construction du JSON composé des deux sources
-			json_finish = {key: value for (key, value) in (json_to_merge.items() + json_test.items())}
-			# Replace
-			db.find_one_and_replace({'CODGEO':row['CODGEO']}, json_finish)
+			db.find_one_and_update({'CODGEO':row['CODGEO']}, {"$set": json.loads(df.loc[index].to_json())} )
 
 except :
 	logMsg("ERROR","Erreur dans l'éxécution de la demande.")
