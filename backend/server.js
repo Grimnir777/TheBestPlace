@@ -2,11 +2,23 @@
 *   The Best Place server   *
 *****************************/
 
-let mongo       = require('mongodb'),
-    mongoose    = require('mongoose'),
-    express     = require('express')
-    ;
+/* Import packages */
+let mongoose        = require('mongoose')
+,   mongo           = require('mongodb')
+,   express         = require('express')
+,   xmlparser       = require('js2xmlparser')
+,   custom_logger   = require('./logger.js')
+;
 
+/* Configuration */
+// TODO : Create a file conf
+let database_name = 'TheBestPlace';/*"VilleDeReves";*/
+let town_collecion_name = 'villes';
+let app_port = 2020;
+
+/* Create Logger */
+let logger = custom_logger.logger;
+logger.debug_lvl = true;
 
 /* Create server express */
 let app = express();
@@ -21,20 +33,20 @@ app.use(function (req, res, next) {
 
   next();
 });
-let server = app.listen(2020, function () {
+let server = app.listen(app_port, function () {
    let host = server.address().address
    let port = server.address().port
    
-   console.log("TheBestPlace server is listening at http://%s:%s", host, port)
+   logger.info("TheBestPlace server is listening at http://" + host + ":" + port);
 });
 
 /* Connect to mongoDB */
-mongoose.connect('mongodb://localhost/TheBestPlace', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/' + database_name, {useNewUrlParser: true});
 
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log("MongoDB connection success");
+    logger.info("MongoDB connection success");
 });
 
 /* Town shema */
@@ -70,28 +82,52 @@ app.get('/getTowns', function (req, res) {
    let skip = (req.query.skip) ? req.query.skip : 0;
    let limit = (req.query.limit) ? req.query.limit : 2;
 
-   let town_getted = db.collection('villes').find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+   let town_getted = db.collection(town_collecion_name).find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
         res.send(db_result);
+    });
+});
+
+/* Get an XML which contain the towns
+ */
+app.get('/townsToXML', function(req, res){
+    logger.debug('Here townsToXML');
+
+   let skip = (req.query.skip) ? req.query.skip : 0;
+   let limit = (req.query.limit) ? req.query.limit : 2;
+
+    let town_getted = db.collection(town_collecion_name).find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+        if(err) throw err;
+
+        console.log(db_result);
+        let json = xmlparser.parse('villes', db_result); // change db_result to string
+
+        res.send(json);
     });
 });
 
 /* Get number of towns
 */
 app.get('/getNbTowns', function (req, res) {
-  db.collection('villes').count({}, function(error, numOfDocs) {
-    res.send({nbTowns: numOfDocs});
-  });
+    db.collection('villes').count({}, function(error, numOfDocs) {
+        res.send({nbTowns: numOfDocs});
+    });
 });
 
 
-/* Get number of towns
+/* Get town information
 */
 app.get('/getTownInfos', function (req, res) {
-  let o_id = new mongo.ObjectID(req.query._id);
+    let o_id = new mongo.ObjectID(req.query._id);
 
-  db.collection('villes').findOne({_id: o_id}, function (err, db_result) {
-    if(err) throw err;
-    res.json(db_result);
-  });
+    db.collection('villes').findOne({_id: o_id}, function (err, db_result) {
+        if(err) throw err;
+        res.json(db_result);
+    });
+});
+
+
+process.on('SIGINT', function() {
+    server.close(); logger.info("Shutdown server");
+    db.close(); logger.info("Closing DB connection");
 });
