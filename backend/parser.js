@@ -49,9 +49,28 @@ function buildXMLArray(js, conf, deep_lvl, parent_key){
     let node_name = getArrayChildName(conf, parent_key); if(node_name == null) { node_name = 0; use_count = true; }
 
     js.forEach(function(obj){
-        xml += indent + '<' + node_name + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
-        xml += buildXMLObject(obj, conf, deep_lvl + 1);
-        xml += indent + '</' + node_name + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
+
+        // Define if the the obj is a primitif type or not
+        let is_primitif_obj = true;
+        if(obj instanceof Object || obj instanceof Array)
+            is_primitif_obj = false;
+
+        // Draw the first tag (add the \n if we are NOT in compact mode AND if the type is not primitif -> draw on many line)
+        xml += indent + '<' + node_name + '>'; if(getConfAttribute(conf, 'compact') == false && !is_primitif_obj) xml += '\n';
+        
+        // Draw the content of the node
+        if(is_primitif_obj == false)
+            xml += buildXMLObject(obj, conf, deep_lvl + 1);
+        else
+            xml += obj;
+        
+        // Add the indent if we are NOT in compact mode AND if the type is not primitif
+        if(getConfAttribute(conf, 'compact') == false && !is_primitif_obj) xml += indent;
+
+        // Add the close tag. Add a \n if we are NOT in compact mode
+        xml += '</' + node_name + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
+
+        // Increment the count name if the tag name is the id of the item in the array
         if(use_count == true) ++node_name;
     });
 
@@ -81,9 +100,8 @@ function buildXMLObject(js, conf, deep_lvl){
             xml += indent + '</' + key + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
 
         } else {
-
-             xml += indent + '<' + key + '>' + js[key] + '</' + key + '>';
-             if(getConfAttribute(conf, 'compact') == false) xml += '\n';
+            xml += indent + '<' + key + '>' + js[key] + '</' + key + '>';
+            if(getConfAttribute(conf, 'compact') == false) xml += '\n';
 
         }
     }

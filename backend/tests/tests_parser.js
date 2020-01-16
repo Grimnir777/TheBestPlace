@@ -14,12 +14,13 @@ let conf = {
 let obj1 = {
     _id : 12345678,
     name : "Orsay",
-    highway : ['A6', 'A7', 'A8']
+    highways : ['A6', 'A7', 'A8']
 };
 
 let obj2 = {
     _id : 1234543,
-    name : "Massy"
+    name : "Massy",
+    numbers : [1, 2 ,3]
 };
 
 let arr = [obj1, obj2];
