@@ -11,21 +11,24 @@ let defaultConfiguration = {
     arrayChildNameMap : {}  // A mapping for give a name for array item. Otherwise it will be the index
 };
 
+let default_root_value = 'root';
+let default_array_item_value = 'value';
+
 /* Parse a Javascript Object into a XML string
  * js   : The javascript Object
  * conf : An object that contain configuration (cf. documentation) 
  */
 module.exports.js2xml = js2xml; // Export this function
 function js2xml(js, conf){
-    let xml = '<?xml version="1.0">';
+    let xml = '<?xml version="1.0"?>';
 
     // Check for add a potential root
     let rootname = getConfAttribute(conf, 'rootname');
     if(rootname != null){
-        logger.debug('ADD ROOT');
-        new_js = {};
-        new_js[rootname] = js;
-        js = new_js;
+        js = addRootForNode(rootname, js);
+    } else if(js instanceof Array){
+        logger.debug('ADD DEFAULT ROOT : ' + default_root_value);
+        js = addRootForNode(default_root_value, js);
     }
 
     if(getConfAttribute(conf, 'compact') == false) xml += '\n';
@@ -39,14 +42,13 @@ function js2xml(js, conf){
  * js           : The javascript Object
  * conf         : An object that contain configuration (cf. documentation) 
  * deep_lvl     : The index of the depth reach. Used when compact is disable to indent the current node
- * parent_key   : The name of the parent node. Use to math the child name if it's defined. Otherwise, it will use the index
+ * parent_key   : The name of the parent node. Use to math the child name if it's defined. Otherwise, it will use the word VALUE
  */
 function buildXMLArray(js, conf, deep_lvl, parent_key){
     let xml = '';
     let indent = computeIndent(conf, deep_lvl);
 
-    let use_count = false; // There isn't a child name for the array's item. So we will count the number of item and use the id as the node name
-    let node_name = getArrayChildName(conf, parent_key); if(node_name == null) { node_name = 0; use_count = true; }
+    let node_name = getArrayChildName(conf, parent_key); if(node_name == null) { node_name = default_array_item_value; }
 
     js.forEach(function(obj){
 
@@ -69,9 +71,6 @@ function buildXMLArray(js, conf, deep_lvl, parent_key){
 
         // Add the close tag. Add a \n if we are NOT in compact mode
         xml += '</' + node_name + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
-
-        // Increment the count name if the tag name is the id of the item in the array
-        if(use_count == true) ++node_name;
     });
 
     return xml;
@@ -100,6 +99,7 @@ function buildXMLObject(js, conf, deep_lvl){
             xml += indent + '</' + key + '>'; if(getConfAttribute(conf, 'compact') == false) xml += '\n';
 
         } else {
+
             xml += indent + '<' + key + '>' + js[key] + '</' + key + '>';
             if(getConfAttribute(conf, 'compact') == false) xml += '\n';
 
@@ -138,4 +138,13 @@ function getConfAttribute(conf, attr){
 function getArrayChildName(conf, attr){
     if(conf != undefined && conf['arrayChildNameMap'] != undefined) return conf['arrayChildNameMap'][attr];
     return null;
+}
+
+/* Add 
+ *
+ */
+function addRootForNode(root_name, js){
+    new_js = {};
+    new_js[root_name] = js;
+    return new_js;
 }
