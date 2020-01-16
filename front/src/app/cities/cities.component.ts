@@ -65,6 +65,8 @@ export class CitiesComponent implements OnInit {
     this.form = new FormGroup({
       dep : new FormControl()
     });
+    this.skip = 0;
+    this.limit=40;
   }
 
   public dataChanged(event) {

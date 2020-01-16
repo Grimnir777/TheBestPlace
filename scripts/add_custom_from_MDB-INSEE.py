@@ -121,6 +121,7 @@ try :
 		try :
 			db.remove({})
 			db.insert_many(dataJSON)
+			client.TheBestPlace.criteres.create_index([("CODGEO", 1)])
 		except :
 			logMsg("ERROR","Erreur lors de l'enregistrement en base")
 

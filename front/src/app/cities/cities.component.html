@@ -4,7 +4,7 @@
   <form [formGroup]="form">
 
     <div class="buttonRow">
-      <button mat-raised-button color="warn">Réinitialiser les filtres</button>
+      <button mat-raised-button color="warn" (click)="resetForm()">Réinitialiser les filtres</button>
     </div>
     <div id="filters">
       <div class="row">
