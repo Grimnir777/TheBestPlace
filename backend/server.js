@@ -157,7 +157,7 @@ app.get('/townsToXML', function(req, res){
     logger.debug('Here townsToXML');
 
     let skip = (req.query.skip) ? req.query.skip : 0;
-    let limit = (req.query.limit) ? req.query.limit : 2;
+    let limit = (req.query.limit) ? req.query.limit : 999999999;
 
     let town_getted = db.collection(town_collecion_name).find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
@@ -168,12 +168,40 @@ app.get('/townsToXML', function(req, res){
             }
         });
 
-        console.log(db_result);
+        //console.log(db_result);
 
         logger.debug('Parsing Towns');
         let xml = custom_parser.js2xml(db_result, {compact : false, indent : 4, rootname : 'Towns', arrayChildNameMap : { 'Towns' : 'Town'}});
         logger.debug('Result : ');
-        console.log(xml);
+        //console.log(xml);
+
+        res.send(xml);
+    });
+});
+
+/* Get cities as XML, skip, limit with global filter
+ */
+app.post('/getCitiesAsXML', function(req, res){
+   let skip = (req.body.skip) ? req.body.skip : 0;
+   let limit = (req.body.limit) ? req.body.limit : 999999999;
+   
+   let query = (req.body.filter) ? req.body.filter : {};
+
+   let town_getted = db.collection(town_collecion_name).find(query).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+        if(err) throw err;
+        
+        db_result.forEach(function(town){
+            for(let key in town){
+                town[key] += '';
+            }
+        });
+
+        //console.log(db_result);
+
+        logger.debug('Parsing Towns');
+        let xml = custom_parser.js2xml(db_result, {compact : false, indent : 4, rootname : 'Towns', arrayChildNameMap : { 'Towns' : 'Town'}});
+        logger.debug('Result : ');
+        //console.log(xml);
 
         res.send(xml);
     });
