@@ -8,17 +8,25 @@ let mongoose        = require('mongoose')
 ,   express         = require('express')
 ,   custom_parser   = require('./parser.js')
 ,   custom_logger   = require('./logger.js')
+,   props_reader    = require('properties-reader')
 ;
-
-/* Configuration */
-// TODO : Create a file conf
-let database_name = /*'TheBestPlace';*/"VilleDeReve";
-let town_collecion_name = 'villes';
-let app_port = 2020;
 
 /* Create Logger */
 let logger = custom_logger.logger;
 logger.debug_lvl = true;
+
+/* Configuration */
+let properties_file = 'configuration.conf';
+
+var properties = props_reader(properties_file);
+
+let database_name = properties.get('database.name');
+let town_collecion_name = properties.get('database.collection.town');
+let app_port = properties.get('server.port');
+
+logger.debug('Database name : ' + database_name);
+logger.debug('Town collection name : ' + town_collecion_name);
+logger.debug('App port : ' + app_port);
 
 /* Create server express */
 let app = express();
@@ -88,20 +96,46 @@ app.get('/getTowns', function (req, res) {
     });
 });
 
+/* Get cities, skip, limit and dep filter
+ */
+app.get('/findCities', function(req, res){
+   let skip = (req.query.skip) ? req.query.skip : 0;
+   let limit = (req.query.limit) ? req.query.limit : 2;
+   let dep = (req.query.dep) ? req.query.dep : null;
+
+   let query = (dep == null) ? {} : { dep : dep };
+
+   let town_getted = db.collection(town_collecion_name).find(query).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+        if(err) throw err;
+        res.send(db_result);
+    });
+});
+
+/* Get cities, skip, limit with global filter
+ */
+app.post('/findCitiesWithFilter', function(req, res){
+   let skip = (req.body.skip) ? req.body.skip : 0;
+   let limit = (req.body.limit) ? req.body.limit : 2;
+   
+   let query = (req.body.filter) ? req.body.filter : {};
+
+   let town_getted = db.collection(town_collecion_name).find(query).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+        if(err) throw err;
+        res.send(db_result);
+    });
+});
+
+
 /* Get an XML which contain the towns
  */
 app.get('/townsToXML', function(req, res){
     logger.debug('Here townsToXML');
 
-   let skip = (req.query.skip) ? req.query.skip : 0;
-   let limit = (req.query.limit) ? req.query.limit : 2;
+    let skip = (req.query.skip) ? req.query.skip : 0;
+    let limit = (req.query.limit) ? req.query.limit : 2;
 
     let town_getted = db.collection(town_collecion_name).find({}).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
-
-/*        for(let i = 0; i < db_result.length; ++i){
-            db_result[i]._id = '' + db_result[i]._id + '';
-        }*/
 
         db_result.forEach(function(town){
             for(let key in town){
@@ -123,7 +157,7 @@ app.get('/townsToXML', function(req, res){
 /* Get number of towns
 */
 app.get('/getNbTowns', function (req, res) {
-    db.collection('villes').count({}, function(error, numOfDocs) {
+    db.collection(town_collecion_name).count({}, function(error, numOfDocs) {
         res.send({nbTowns: numOfDocs});
     });
 });
@@ -134,7 +168,7 @@ app.get('/getNbTowns', function (req, res) {
 app.get('/getTownInfos', function (req, res) {
     let o_id = new mongo.ObjectID(req.query._id);
 
-    db.collection('villes').findOne({_id: o_id}, function (err, db_result) {
+    db.collection(town_collecion_name).findOne({_id: o_id}, function (err, db_result) {
         if(err) throw err;
         res.json(db_result);
     });
