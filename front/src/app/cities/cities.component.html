@@ -7,36 +7,33 @@
       <button mat-raised-button color="warn" (click)="resetForm()">Réinitialiser les filtres</button>
     </div>
     <div id="filters">
-      <div class="row">
+      <!-- <div class="row">
         <mat-form-field>
           <mat-label>Département</mat-label>
-          <mat-select formControlName="dep" [(value)]="selected">
+          <mat-select  [(value)]="selected">
             <ng-container *ngFor="let d of deps">
               <mat-option value="{{d}}">{{d}}</mat-option>
             </ng-container>
           </mat-select>
         </mat-form-field>
-  
       </div>
+
       <div class="row">
         <div class="checkbox">
           <mat-checkbox>Check me!</mat-checkbox>
         </div>
-      </div>
+      </div> -->
+
       <div class="row">
-        <div class="checkbox">
-          <mat-checkbox>Check me!</mat-checkbox>
-        </div>
-      </div>
-      <div class="row">
-        <div class="checkbox">
-          <mat-checkbox>Check me!</mat-checkbox>
+        <div class="slider">
+          <p>Nombre de festivals</p>
+          <mat-slider min="0" max="188" step="10" value="0" thumbLabel formControlName="nb_festival" > </mat-slider>
         </div>
       </div>
       <div class="row">
         <div class="slider">
-          <p>Hello world slider</p>
-          <mat-slider min="0" max="10" step="1" value="0" thumbLabel > </mat-slider>
+          <p>Présence MDPH</p>
+          <mat-slider min="0" max="1" step="1" value="0" thumbLabel formControlName="presence_MDPH" > </mat-slider>
         </div>
       </div>
 

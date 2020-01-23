@@ -47,10 +47,13 @@ export class CitiesComponent implements OnInit {
     this.resetForm();
 
     this.form.valueChanges.subscribe( (changes : SimpleChanges) => {
+      console.log(changes);
       this.citiesDS.getCitiesWFilter(changes, this.skip, this.limit).subscribe((results)=> {
+        console.log(results);
+        
         this.cities = [];
         results['result'].forEach((city) => {
-          let newCity = new City(city);
+          let newCity = new City(city['infos'][0]);
           newCity['cols']=1;
           newCity['rows']=2;
           this.cities.push(newCity);
@@ -63,7 +66,9 @@ export class CitiesComponent implements OnInit {
 
   public resetForm(){
     this.form = new FormGroup({
-      dep : new FormControl()
+      nb_festival : new FormControl(0),
+      presence_MDPH : new FormControl()
+
     });
     this.skip = 0;
     this.limit=40;

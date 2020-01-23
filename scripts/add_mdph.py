@@ -18,7 +18,7 @@ df = pandas.read_json( basePath + '/mdph.json')
 ville_avec_mdph = pandas.DataFrame(df['commune_cog'].copy())
 
 # add column
-ville_avec_mdph['PresenceMDPH']="1"
+ville_avec_mdph['PresenceMDPH']=1
 
 # rename code insee
 ville_avec_mdph.columns=['code_insee','presence_MDPH']

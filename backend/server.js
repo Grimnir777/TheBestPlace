@@ -23,10 +23,12 @@ var properties = props_reader(properties_file);
 
 let database_name = properties.get('database.name');
 let town_collecion_name = properties.get('database.collection.town');
+let criteres_collecion_name = properties.get('database.collection.criteres');
 let app_port = properties.get('server.port');
 
 logger.debug('Database name : ' + database_name);
 logger.debug('Town collection name : ' + town_collecion_name);
+logger.debug('Critere collection name : ' + criteres_collecion_name);
 logger.debug('App port : ' + app_port);
 
 /* Create server express */
@@ -130,6 +132,58 @@ app.post('/findCitiesWithFilter', function(req, res){
 
         })
     });
+});
+
+/* Get cities, skip, limit with global filter
+ */
+app.post('/findCitiesWithFilterV2', function(req, res){
+    let skip = (req.body.skip) ? req.body.skip : 0;
+    let limit = (req.body.limit) ? req.body.limit : 2;
+   
+    let query = (req.body.filter) ? req.body.filter : {};
+
+    let nb_festival = (req.body.filter.nb_festival) ? req.body.filter.nb_festival : 0;
+    
+    let presence_MDPH = (req.body.filter.presence_MDPH) ? req.body.filter.presence_MDPH : 0;
+
+
+
+    let towns = db.collection(criteres_collecion_name).aggregate([
+        {$match: {'nb_festival':{ $gte: nb_festival} } },
+        {$match: {'presence_MDPH':{ $gte: presence_MDPH} } },
+        { $lookup:
+            {
+                from: 'villes',
+                localField: 'CODGEO',
+                foreignField: 'code_commune',
+                as: 'infos'
+            }
+        },
+        {
+            $count: "counter"
+        }
+    ])
+
+    //console.log((towns.result));
+    
+    db.collection(criteres_collecion_name).aggregate([
+        {$match: {'nb_festival':{ $gte: nb_festival} } },
+        {$match: {'presence_MDPH':{ $gte: presence_MDPH} } },
+        { $lookup:
+            {
+                from: 'villes',
+                localField: 'CODGEO',
+                foreignField: 'code_commune',
+                as: 'infos'
+            }
+        }
+    ]).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+            if(err) throw err;
+            res.send({
+                result:db_result,
+                count:towns['counter']
+            });
+        });
 });
 
 /* Get all departements
