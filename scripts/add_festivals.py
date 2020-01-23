@@ -9,9 +9,14 @@ arrParis = ["75101","75102","75103","75104","75105","75106","75107","75108","751
 
 # connect to the database
 client = MongoClient('localhost:27017')
-db=client.TheBestPlace.criteres
+db=client.TheBestPlace.villes
 
-db.update_many({},{"$set" : {"nb_festival":0}})
+toInsert = '{ "criteres" : { "nb_festival" : {"valeur":0, "note":0 } } }'
+jsonToInsert = json.loads(toInsert)
+print(jsonToInsert)
+
+db.update_many({},{"$set": {"criteres.nb_festival.valeur":0,"criteres.nb_festival.note":0}})
+
 # get json in a dataframe
 df = pandas.read_json(basePath + '/panorama-des-festivals.json', orient='records')
 
@@ -31,10 +36,10 @@ print(festival_par_ville)
 
 for index, row in festival_par_ville.iterrows():
     jsonObject = json.loads(festival_par_ville.loc[index].to_json())
+    
+    jsonFestival = jsonToInsert
+    jsonFestival['criteres']['nb_festival']['valeur'] = jsonObject['nb_festival']
     if index in arrParis:
-        db.find_one_and_update({'CODGEO':"75056"}, {"$inc": {"nb_festival" :jsonObject['nb_festival']} })
+        db.find_one_and_update({'code_commune':"75056"}, {"$set": {"criteres.nb_festival.valeur":jsonObject['nb_festival']}})
     else:
-        db.find_one_and_update({'CODGEO':index}, {"$set": jsonObject})
-
-# POST
-# db.insert_many(festival_par_ville.to_dict('records'))
+        db.find_one_and_update({'code_commune':index}, {"$set": {"criteres.nb_festival.valeur":jsonObject['nb_festival']}})

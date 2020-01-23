@@ -3,3 +3,8 @@ db.getCollection('villes').count()
 
 Créer un index sur la collection critère sur CODGEO et trier par ordre croissant
 db.getCollection('criteres').createIndex({CODGEO:1})
+
+Trouver avec des sous objets (critères)
+db.getCollection('villes').find({"criteres.presence_MDPH.valeur" : {"$eq" : 1, "$exists" : true}})
+
+db.getCollection('villes').find({"criteres.nb_festival.valeur" : {"$gte" : 1},"criteres.presence_MDPH.valeur":{"$gte" : 1}})

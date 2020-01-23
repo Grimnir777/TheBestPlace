@@ -8,9 +8,12 @@ basePath = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 
 # connect to the database
 client = MongoClient('localhost:27017')
-db=client.TheBestPlace.criteres
+db=client.TheBestPlace.villes
 
-db.update_many({},{"$set" : {"presence_MDPH":0}})
+toInsert = '{ "criteres" : { "presence_MDPH" : {"valeur":0, "note":0 } } }'
+jsonToInsert = json.loads(toInsert)
+
+db.update_many({},{"$set": {"criteres.presence_MDPH.valeur":0,"criteres.presence_MDPH.note":0}} )
 # read data
 df = pandas.read_json( basePath + '/mdph.json')
 
@@ -27,8 +30,7 @@ print(ville_avec_mdph)
 
 for index, row in ville_avec_mdph.iterrows():
     jsonObject = json.loads(ville_avec_mdph.loc[index].to_json())
-    del jsonObject['code_insee']
-    db.find_one_and_update({'CODGEO':row['code_insee']}, {"$set": jsonObject})
-
-# post
-# db.insert_many(ville_avec_mdph.to_dict('records'))
+    criteres = jsonToInsert
+    criteres['criteres']['presence_MDPH']['valeur'] = jsonObject['presence_MDPH']
+    db.find_one_and_update({'code_commune':row['code_insee']}, {"$set": {"criteres.presence_MDPH.valeur":jsonObject['presence_MDPH']}})
+    db.find_one_and_update
