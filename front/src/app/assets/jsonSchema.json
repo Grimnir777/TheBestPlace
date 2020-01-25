@@ -1,0 +1,160 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "dep": {
+        "type": "string"
+      },
+      "slug": {
+        "type": "string"
+      },
+      "nom_simple": {
+        "type": "string"
+      },
+      "nom_reel": {
+        "type": "string"
+      },
+      "code_postal": {
+        "type": "string"
+      },
+      "code_commune": {
+        "type": "string"
+      },
+      "longitude_deg": {
+        "type": "number"
+      },
+      "latitude_deg": {
+        "type": "number"
+      },
+      "criteres": {
+        "type": "object",
+        "properties": {
+          "presence_MDPH": {
+            "type": "object",
+            "properties": {
+              "valeur": {
+                "type": "integer"
+              },
+              "note": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "valeur",
+              "note"
+            ]
+          },
+          "nb_festival": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          },
+          "nb_etudiants": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          },
+          "population": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          },
+          "taux_etudiants": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          },
+          "nb_log_vacants": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          },
+          "nb_logement": {
+            "type": "object",
+            "properties": {
+              "note": {
+                "type": "integer"
+              },
+              "valeur": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "note",
+              "valeur"
+            ]
+          }
+        },
+        "required": [
+          "presence_MDPH",
+          "nb_festival",
+          "nb_etudiants",
+          "population",
+          "taux_etudiants",
+          "nb_log_vacants",
+          "nb_logement"
+        ]
+      }
+    },
+    "required": [
+      "dep",
+      "slug",
+      "nom_simple",
+      "nom_reel",
+      "code_postal",
+      "code_commune",
+      "longitude_deg",
+      "latitude_deg",
+      "criteres"
+    ]
+  }

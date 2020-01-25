@@ -1,9 +1,10 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { CityDataService } from '../services/city-data.service.js';
 import { City } from '../models/city.js';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatDialog } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Critere } from '../models/critere.js';
+import { ExportDialogComponent } from '../export-dialog/export-dialog.component';
 
 @Component({
   selector: 'app-cities',
@@ -12,7 +13,10 @@ import { Critere } from '../models/critere.js';
 })
 export class CitiesComponent implements OnInit {
 
-  constructor(private citiesDS: CityDataService) { }
+  constructor(
+    private citiesDS: CityDataService,
+    public dialog: MatDialog
+  ) { }
   deps: Array<any> = [];
   criteres: Array<Critere> = [];
   cities: Array<City> = [];
@@ -69,6 +73,17 @@ export class CitiesComponent implements OnInit {
     this.skip = event.pageIndex * event.pageSize;
     this.limit = event.pageSize;
     this.getCities(this.form.value);
+  }
+
+  public exportJson(): void {
+    const dialogRef = this.dialog.open(ExportDialogComponent, {
+      width: '250px',
+      data: {type: "json", filters: this.form.value}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

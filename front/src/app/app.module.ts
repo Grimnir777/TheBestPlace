@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,17 +15,19 @@ import {
   MatCheckboxModule,
   MatSliderModule,
   MatButtonModule,
-  MatCardModule } from '@angular/material';
+  MatCardModule, 
+  MatDialogModule
+} from '@angular/material';
 import { CityComponent } from './city/city.component';
 import { CitiesComponent } from './cities/cities.component';
-import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms'
+import { ExportDialogComponent } from '../app/export-dialog/export-dialog.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     CityComponent,
-    CitiesComponent
+    CitiesComponent,
+    ExportDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -41,9 +44,13 @@ import { ReactiveFormsModule } from '@angular/forms'
     MatSliderModule,
     MatButtonModule,
     MatCardModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule,
+    MatDialogModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ExportDialogComponent
+  ]
 })
 export class AppModule { }

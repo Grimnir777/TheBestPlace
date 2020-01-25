@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Export en {{data.type}}</h1>
+<div mat-dialog-content>
+  <ng-container *ngIf="data.type === 'json'">
+    <button mat-button (click)="exportSchema()">Exporter le schéma json</button>
+    <button mat-button (click)="exportData()">Exporter les données</button>
+  </ng-container>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="finish()">Terminer</button>
+</div>

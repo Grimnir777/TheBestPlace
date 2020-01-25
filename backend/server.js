@@ -121,7 +121,6 @@ app.post('/findCitiesWithFilter', function(req, res){
    for (const key in query) {
        dbFilter[key] = JSON.parse( req.body.filter[key] );
    }
-   console.log(dbFilter);
    
    let town_getted = db.collection(town_collecion_name).find(dbFilter).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
