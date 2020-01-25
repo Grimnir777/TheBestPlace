@@ -11,6 +11,7 @@ declare var H: any;
 })
 export class CityComponent implements OnInit {
   public city: City;
+  public criteresKeys = [];
 
   @ViewChild("map", { static: true }) public mapElement: ElementRef; 
   public lat: any = '22.5726';  
@@ -28,6 +29,8 @@ export class CityComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.citiesDS.getTownInfos(params.get('id')).subscribe( city => {
         this.city = new City(city);
+        this.criteresKeys = Object.keys(this.city.criteres);
+        
       });
     });
     this.platform = new H.service.Platform({

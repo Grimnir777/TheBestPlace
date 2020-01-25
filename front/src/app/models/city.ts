@@ -1,3 +1,5 @@
+import { Critere } from './critere';
+
 export class City {
   _id: string;
   dep:string;
@@ -8,6 +10,7 @@ export class City {
   code_commune:string;
   longitude_deg:number;
   latitude_deg:number;
+  criteres: Array<Critere>;
 
   constructor(city?: any) {
     if (city) {
@@ -20,6 +23,7 @@ export class City {
       this.code_commune = city.code_commune;
       this.longitude_deg = city.longitude_deg;
       this.latitude_deg = city.latitude_deg;
+      this.criteres = city.criteres;
     }
   }
 }

@@ -24,9 +24,10 @@
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-list>
-                <mat-list-item>Item 1</mat-list-item>
-                <mat-divider></mat-divider>
-                <mat-list-item>Item 2</mat-list-item>
+                <ng-container *ngFor="let critere of criteresKeys">
+                  <mat-list-item> {{critere}} : {{city['criteres'][critere].valeur}}</mat-list-item>
+                  <mat-divider></mat-divider>
+                </ng-container>
               </mat-list>
             </mat-expansion-panel>
         </mat-accordion>

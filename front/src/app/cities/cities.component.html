@@ -23,8 +23,15 @@
           <mat-checkbox>Check me!</mat-checkbox>
         </div>
       </div> -->
-
-      <div class="row">
+      <ng-container *ngFor="let crit of criteres">
+        <div class="row">
+          <div class="slider">
+            <p>{{crit.name}}</p>
+            <mat-slider min="0" max="{{crit.val_max}}" step="2" value="0" thumbLabel formControlName="{{crit.name}}" > </mat-slider>
+          </div>
+        </div>
+      </ng-container>
+      <!-- <div class="row">
         <div class="slider">
           <p>Nombre de festivals</p>
           <mat-slider min="0" max="188" step="10" value="0" thumbLabel formControlName="nb_festival" > </mat-slider>
@@ -35,7 +42,7 @@
           <p>Présence MDPH</p>
           <mat-slider min="0" max="1" step="1" value="0" thumbLabel formControlName="presence_MDPH" > </mat-slider>
         </div>
-      </div>
+      </div> -->
 
       
     </div>

@@ -10,7 +10,8 @@ import { City } from '../models/city';
 export class CityDataService {
   private _getTownsURL = environment.baseAPI + 'getTowns';
   private _getDepsURL = environment.baseAPI + 'getAllDeps';
-  private _findCitiesFilteredURL = environment.baseAPI + 'findCitiesWithFilterV2';
+  private _getCriteresURL = environment.baseAPI + 'getCriteres';
+  private _findCitiesFilteredURL = environment.baseAPI + 'findCitiesWithFilter';
   private _getNbTownsURL = environment.baseAPI + 'getNbTowns';
   private _getTownInfosURL = environment.baseAPI + 'getTownInfos';
 
@@ -35,6 +36,17 @@ export class CityDataService {
     });
   }
 
+  public getCriteres() : Observable<Array<any>> {
+    return new Observable((suscriber) => {
+      this.http.get(this._getCriteresURL).subscribe((criteres: Array<string>) => {
+        suscriber.next(criteres);
+      },
+        (err) => {
+          console.log(err);
+        });
+    });
+  }
+
   public getAllDeps() : Observable<Array<any>> {
     return new Observable((suscriber) => {
       this.http.get(this._getDepsURL).subscribe((deps: Array<any>) => {
@@ -47,15 +59,17 @@ export class CityDataService {
   }
 
   public getCitiesWFilter(filter: any, skip: number, limit: number) : Observable<Array<any>> {
+    let newFilter = {};
+    for (const key in filter) {
+      newFilter['criteres.' + key + ".valeur"] = "{\"$gte\" : " + filter[key] + "}";
+    }
     let req = {
-      filter:filter,
+      filter:newFilter,
       skip:skip,
       limit:limit
     }
     return new Observable((suscriber) => {
-      this.http.post(this._findCitiesFilteredURL,req).subscribe((cities: Array<any>) => {    
-        console.log(cities);
-            
+      this.http.post(this._findCitiesFilteredURL,req).subscribe((cities: Array<any>) => {
         suscriber.next(cities);
       },
         (err) => {

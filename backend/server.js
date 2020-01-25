@@ -73,18 +73,6 @@ let townSchema = new mongoose.Schema({
   latitude_deg:Number
 });
 
-/*let Ville = mongoose.model('Ville', villeSchema);
-let testV = new Ville({ville: "Massy", code_postal: "91300", departement: "91"});
-
-console.log(testV);
-
-testV.save(function(error){
-  console.log("TestV has been saved!");
-  if (error) {
-    console.error(error);
-  }
-});*/
-
 /* Get towns
  * arg1 skip
  * arg2 limit
@@ -114,17 +102,30 @@ app.get('/findCities', function(req, res){
     });
 });
 
+/* Get criteres
+ */
+app.get('/getCriteres', function(req, res){
+    db.collection(criteres_collecion_name).find({}).toArray(function(err, db_result){
+        if(err) throw err;
+        res.send(db_result);
+     });
+ });
+
 /* Get cities, skip, limit with global filter
  */
 app.post('/findCitiesWithFilter', function(req, res){
    let skip = (req.body.skip) ? req.body.skip : 0;
-   let limit = (req.body.limit) ? req.body.limit : 2;
-   
+   let limit = (req.body.limit) ? req.body.limit : 10;
    let query = (req.body.filter) ? req.body.filter : {};
-
-   let town_getted = db.collection(town_collecion_name).find(query).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
+   let dbFilter = {};
+   for (const key in query) {
+       dbFilter[key] = JSON.parse( req.body.filter[key] );
+   }
+   console.log(dbFilter);
+   
+   let town_getted = db.collection(town_collecion_name).find(dbFilter).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
         if(err) throw err;
-        db.collection(town_collecion_name).find(query).count().then( (counter) => {
+        db.collection(town_collecion_name).find(dbFilter).count().then( (counter) => {
             res.send({
                 result:db_result,
                 count:counter
@@ -134,57 +135,6 @@ app.post('/findCitiesWithFilter', function(req, res){
     });
 });
 
-/* Get cities, skip, limit with global filter
- */
-app.post('/findCitiesWithFilterV2', function(req, res){
-    let skip = (req.body.skip) ? req.body.skip : 0;
-    let limit = (req.body.limit) ? req.body.limit : 2;
-   
-    let query = (req.body.filter) ? req.body.filter : {};
-
-    let nb_festival = (req.body.filter.nb_festival) ? req.body.filter.nb_festival : 0;
-    
-    let presence_MDPH = (req.body.filter.presence_MDPH) ? req.body.filter.presence_MDPH : 0;
-
-
-
-    let towns = db.collection(criteres_collecion_name).aggregate([
-        {$match: {'nb_festival':{ $gte: nb_festival} } },
-        {$match: {'presence_MDPH':{ $gte: presence_MDPH} } },
-        { $lookup:
-            {
-                from: 'villes',
-                localField: 'CODGEO',
-                foreignField: 'code_commune',
-                as: 'infos'
-            }
-        },
-        {
-            $count: "counter"
-        }
-    ])
-
-    //console.log((towns.result));
-    
-    db.collection(criteres_collecion_name).aggregate([
-        {$match: {'nb_festival':{ $gte: nb_festival} } },
-        {$match: {'presence_MDPH':{ $gte: presence_MDPH} } },
-        { $lookup:
-            {
-                from: 'villes',
-                localField: 'CODGEO',
-                foreignField: 'code_commune',
-                as: 'infos'
-            }
-        }
-    ]).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, db_result){
-            if(err) throw err;
-            res.send({
-                result:db_result,
-                count:towns['counter']
-            });
-        });
-});
 
 /* Get all departements
 */

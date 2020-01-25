@@ -33,4 +33,3 @@ for index, row in ville_avec_mdph.iterrows():
     criteres = jsonToInsert
     criteres['criteres']['presence_MDPH']['valeur'] = jsonObject['presence_MDPH']
     db.find_one_and_update({'code_commune':row['code_insee']}, {"$set": {"criteres.presence_MDPH.valeur":jsonObject['presence_MDPH']}})
-    db.find_one_and_update
