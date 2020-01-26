@@ -18,7 +18,7 @@ TheBestPlace
 
 TheBestPlace est une application Web guidant des utilisateurs désireux de trouver la ville de leur rêve.
 Pour ce faire, six critères sont proposés par défaut :
-- Présence d'un MDP
+- Présence d'une MDPH
 - Nombre de festivals
 - Population
 - Taux étudiants
@@ -49,9 +49,7 @@ Afin d'installer l'application veuillez suivre les étapes suivantes :
 2. Dans le répertoir "`back`" **ET** "`front`" entrez la commande suivante : `npm install`.
 3. Enjoy o/ Passez à la mise en place de la base de données.
 
-
-## Mise en place de la base données
-
+## Mise en place de la base données
 
 ### ~ Distributions Linux
 
