@@ -1,3 +1,5 @@
+# coding: utf8
+
 from pymongo import MongoClient
 import pandas
 import os

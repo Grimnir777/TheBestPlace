@@ -14,7 +14,7 @@ for key in villes.find_one({})['criteres']:
         "name" : key,
         "val_max": max_val
     }
-    print('clé : ', key) 
+    print('clé : ', key)
     print('Valeur max', max_val)
     criteres.find_one_and_update({'name': key},{"$set": to_insert},upsert=True)
 
@@ -32,4 +32,3 @@ for key in villes.find_one({})['criteres']:
 #         "note_max":"188"
 #     }
 # ]
-
