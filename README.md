@@ -32,7 +32,7 @@ L'utilisateur peut accèder l'IHM pour utiliser différentes features :
 
 ## Technologie et Pré-requis
 
-Selon les éléments du projet, plusieurs technologies ont été utilisées : 
+Selon les éléments du projet, plusieurs technologies ont été utilisées :
 * **Front ~** Angular.JS
 * **Back ~** Node.JS
 * **Scripts divers ~** Python & Bash
@@ -46,8 +46,10 @@ Autrement, veuilez modifier la configuration dans les scripts.
 
 Afin d'installer l'application veuillez suivre les étapes suivantes :
 1. Clonez/Téléchargez le projet
-2. Dans le répertoir "`back`" **ET** "`front`" entrez la commande suivante : `npm install`.
-3. Enjoy o/ Passez à la mise en place de la base de données.
+2. Dans le répertoire "`back`" **ET** "`front`" entrez la commande suivante : `npm install`.
+3. Pour lancer l'application Faire "`node server.js`" dans le répertoire "`back`" et "`ng serve`" dans le répertoire "`front`".
+4. Rendez-vous sur l'URL `localhost:4200`.
+5. **(OPTION)** Enjoy o/ Passez à la mise en place de la base de données.
 
 ## Mise en place de la base données
 
