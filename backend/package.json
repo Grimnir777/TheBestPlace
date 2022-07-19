@@ -8,7 +8,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.4.0",
     "mongoose": "^5.8.0",
-    "properties-reader": "^0.3.1"
+    "properties-reader": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {
